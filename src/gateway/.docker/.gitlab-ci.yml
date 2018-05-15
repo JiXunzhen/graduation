@@ -1,0 +1,5 @@
+stages:
+  - ut
+  - build
+  - deploy_dev
+  - deploy_prod

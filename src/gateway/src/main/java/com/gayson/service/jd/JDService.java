@@ -1,13 +1,8 @@
 package com.gayson.service.jd;
 
-import com.gayson.models.order.Order;
 import com.gayson.models.PlatformType;
+import com.gayson.models.order.Order;
 import com.gayson.service.PlatformService;
-import com.jd.open.api.sdk.DefaultJdClient;
-import com.jd.open.api.sdk.JdClient;
-import com.jd.open.api.sdk.JdException;
-import com.jd.open.api.sdk.request.order.PopOrderSearchRequest;
-import com.jd.open.api.sdk.response.order.PopOrderSearchResponse;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -24,23 +19,23 @@ public class JDService implements PlatformService{
     private static String appKey = "";
     private static String appSecret = "";
 
-    public Object queryOrder() throws JdException {
-        JdClient client = new DefaultJdClient(SERVER_URL, accessToken, appKey, appSecret);
-
-        PopOrderSearchRequest request = new PopOrderSearchRequest();
-
-        request.setStartDate("jingdong");
-        request.setEndDate("jingdong");
-        request.setOrderState("jingdong");
-        request.setOptionalFields("jingdong");
-        request.setPage("jingdong");
-        request.setPageSize("jingdong");
-        request.setSortType(123);
-        request.setDateType(123);
-
-        PopOrderSearchResponse response = client.execute(request);
-        return response.getSearchorderinfoResult();
-    }
+//    public Object queryOrder() throws JdException {
+//        JdClient client = new DefaultJdClient(SERVER_URL, accessToken, appKey, appSecret);
+//
+//        PopOrderSearchRequest request = new PopOrderSearchRequest();
+//
+//        request.setStartDate("jingdong");
+//        request.setEndDate("jingdong");
+//        request.setOrderState("jingdong");
+//        request.setOptionalFields("jingdong");
+//        request.setPage("jingdong");
+//        request.setPageSize("jingdong");
+//        request.setSortType(123);
+//        request.setDateType(123);
+//
+//        PopOrderSearchResponse response = client.execute(request);
+//        return response.getSearchorderinfoResult();
+//    }
 
     @Override
     public Order get(String orderId) {
