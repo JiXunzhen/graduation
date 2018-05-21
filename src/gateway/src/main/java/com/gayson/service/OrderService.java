@@ -1,6 +1,7 @@
 package com.gayson.service;
 
-import com.gayson.models.order.Order;
+import com.gayson.exception.FallbackException;
+import com.gayson.model.Order;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,34 +11,43 @@ import java.util.List;
  */
 public interface OrderService {
     /**
-     * get single order by gateway order id.
-     * return null while order id not existed.
-     * @param orderId
-     * @return Order
+     * ping order.
+     * @return
      */
-    Order get(String orderId);
+    Order pingOrder();
 
     /**
      * get single order by origin platform order id.
      * return null while order id not existed.
      * @param originalOrderId
+     * @param shopId
      * @return Order
      */
-    Order getByOriginalId(String originalOrderId);
+    Order getByOriginalId(String originalOrderId, String shopId) throws FallbackException;
 
     /**
-     * get multiple order by a list of gateway order id.
-     * elem in result list would be null if order id not existed.
-     * @param orderIds
+     * get fallback default order while circuit breaker open.
+     * @param originalOrderId
+     * @param shopId
      * @return
      */
-    ArrayList<Order> mget(List<String> orderIds);
+    Order fallbackGetByOriginalId(String originalOrderId, String shopId) throws FallbackException;
+
 
     /**
      * get multiple order by a list of platform order id.
      * elem in result list would be null if order id not existed.
      * @param originalOrderIds
+     * @param shopId
      * @return
      */
-    ArrayList<Order> mgetByOriginalOrderIds(List<String> originalOrderIds);
+    ArrayList<Order> getByOriginalOrderIds(List<String> originalOrderIds, String shopId) throws FallbackException;
+
+    /**
+     * get multiple fallback order while circuit breaker open.
+     * @param originalOrderIds
+     * @param shopId
+     * @return
+     */
+    ArrayList<Order> fallbackGetByOriginalOrderIds(List<String> originalOrderIds, String shopId) throws FallbackException;
 }

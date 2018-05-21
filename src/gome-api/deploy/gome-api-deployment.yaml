@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gome-api-deployment
+  labels:
+    app: gome-api
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: gome-api
+  template:
+    metadata:
+      labels:
+        app: gome-api
+    spec:
+      containers:
+      - name: gome-api
+        image: gayson/spring-docker-gome-api:0.1
+        ports:
+        - containerPort: 8080

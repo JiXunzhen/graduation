@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jd-api-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: jd-api
+      channel: stable
+  template:
+    metadata:
+      labels:
+        app: jd-api
+        channel: stable
+    spec:
+      containers:
+      - name: jd-api
+        image: gayson/spring-docker-jd-api:0.1
+        ports:
+        - containerPort: 8080

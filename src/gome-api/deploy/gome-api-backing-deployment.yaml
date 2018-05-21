@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gome-api-backing-deployment
+  labels:
+    app: gome-api-backing
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: gome-api-backing
+  template:
+    metadata:
+      labels:
+        app: gome-api-backing
+    spec:
+      containers:
+      - name: gome-api-backing
+        image: gayson/spring-docker-gome-api:0.1
+        ports:
+        - containerPort: 8010

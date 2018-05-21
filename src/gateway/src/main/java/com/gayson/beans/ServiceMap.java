@@ -1,6 +1,6 @@
 package com.gayson.beans;
 
-import com.gayson.models.PlatformType;
+import com.gayson.model.PlatformType;
 import com.gayson.service.PlatformService;
 import com.gayson.service.guomei.GomeService;
 import com.gayson.service.jd.JDService;

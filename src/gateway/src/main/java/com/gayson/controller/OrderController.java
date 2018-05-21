@@ -1,7 +1,13 @@
 package com.gayson.controller;
 
 import com.gayson.beans.ServiceMap;
-import com.gayson.models.PlatformType;
+import com.gayson.exception.ApplicationException;
+import com.gayson.exception.ErrorCode;
+import com.gayson.exception.FallbackException;
+import com.gayson.globals.Result;
+import com.gayson.globals.ResultStatus;
+import com.gayson.model.Order;
+import com.gayson.model.PlatformType;
 import com.gayson.service.GatewayService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -28,32 +34,55 @@ public class OrderController {
     GatewayService gatewayService;
 
     @RequestMapping(path = "/get")
-    public Result getOrder(@RequestParam(name = "id")String orderId) {
-        return Result.createResult(gatewayService.get(orderId));
+    public Result getOrder(@RequestParam(name = "id") String orderId) {
+        try {
+            return Result.createResult(ResultStatus.OK, gatewayService.get(orderId));
+        } catch (Exception e) {
+            return Result.createError(ResultStatus.USER_ERROR, e);
+        }
     }
 
     @RequestMapping(path = "/get_by_type")
-    public Result getOrderByOriginId(@RequestParam(name = "id")String orderId, @PathVariable(name = "type")String platformType) {
+    public Result getOrderByOriginId(
+            @RequestParam(name = "id") String orderId,
+            @RequestParam(name = "type") String platformType,
+            @RequestParam(name = "shopId") String shopId) {
         try {
+
             PlatformType type = PlatformType.valueOf(platformType);
-            return Result.createResult(serviceMap.getService(type).getByOriginalId(orderId));
-        }catch (IllegalArgumentException e) {
-            return Result.createResult(Result.ResultStatus.PLATFORM_TYPE_ERROR, null);
+            return Result.createResult(ResultStatus.OK, serviceMap.getService(type).getByOriginalId(orderId, shopId));
+        } catch (IllegalArgumentException e) {
+            return Result.createError(ResultStatus.USER_ERROR, new ApplicationException(ErrorCode.PLATFORM_TYPE_ERROR, platformType));
+        } catch (FallbackException e) {
+            return Result.createError(ResultStatus.FALLBACK_ERROR, e);
+        } catch (Exception e) {
+            return Result.createError(ResultStatus.VENDOR_ERROR, e);
         }
     }
 
     @RequestMapping(path = "/mget", method = RequestMethod.POST)
     public Result mgetOrder(@RequestBody List<String> ids) {
-        return Result.createResult(gatewayService.mget(ids));
+        try {
+            return Result.createResult(ResultStatus.OK, gatewayService.mget(ids));
+        } catch (Exception e) {
+            return Result.createError(ResultStatus.USER_ERROR, e);
+        }
     }
 
     @RequestMapping(path = "/mget_by_type")
-    public Result mgetOrderByOriginId(@RequestParam(name = "type")String platformType, @RequestBody List<String> ids) {
+    public Result mgetOrderByOriginId(
+            @RequestParam(name = "type") String platformType,
+            @RequestBody List<String> ids,
+            @RequestParam(name = "shopId") String shopId) {
         try {
             PlatformType type = PlatformType.valueOf(platformType);
-            return Result.createResult(serviceMap.getService(type).mgetByOriginalOrderIds(ids));
-        }catch (IllegalArgumentException e) {
-            return Result.createResult(Result.ResultStatus.PLATFORM_TYPE_ERROR, null);
+            return Result.createResult(ResultStatus.OK, serviceMap.getService(type).getByOriginalOrderIds(ids, shopId));
+        } catch (IllegalArgumentException e) {
+            return Result.createError(ResultStatus.USER_ERROR, new ApplicationException(ErrorCode.PLATFORM_TYPE_ERROR, platformType));
+        } catch (FallbackException e) {
+            return Result.createError(ResultStatus.FALLBACK_ERROR, e);
+        } catch (Exception e) {
+            return Result.createError(ResultStatus.VENDOR_ERROR, e);
         }
     }
 }

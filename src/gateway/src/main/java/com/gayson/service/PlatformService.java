@@ -1,6 +1,6 @@
 package com.gayson.service;
 
-import com.gayson.models.PlatformType;
+import com.gayson.model.PlatformType;
 
 /**
  * the PlatformService interface define and constraint the basic behaviors of platform service.

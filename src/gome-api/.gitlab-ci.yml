@@ -1,0 +1,25 @@
+stages:
+  - unit_test
+  - build
+  - backing
+  - deploy
+
+unit_test:
+  stage: unit_test
+  script:
+    - echo "stage unit_test"
+
+build:
+  stage: build
+  script:
+    - echo "stage build"
+
+backing:
+  stage: backing
+  script:
+    - echo "stage backing"
+
+deploy:
+  stage: deploy
+  script:
+    - echo "stage deploy"

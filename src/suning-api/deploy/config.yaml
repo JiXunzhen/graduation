@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: config-suning-api
+data:
+  application.yaml: |-
+    pool:
+      size:
+        core: 1
+        max: 16
+

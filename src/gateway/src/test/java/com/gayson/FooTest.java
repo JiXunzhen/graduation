@@ -1,7 +1,7 @@
 package com.gayson;
 
-import com.gayson.models.order.Order;
-import com.gayson.models.PlatformType;
+import com.gayson.model.Order;
+import com.gayson.model.PlatformType;
 import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 

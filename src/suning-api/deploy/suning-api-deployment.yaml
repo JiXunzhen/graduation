@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: suning-api-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: suning-api
+      channel: stable
+  template:
+    metadata:
+      labels:
+        app: suning-api
+        channel: stable
+    spec:
+      containers:
+      - name: suning-api
+        image: gayson/spring-docker-suning-api:0.1
+        ports:
+        - containerPort: 8080

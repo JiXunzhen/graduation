@@ -1,6 +1,6 @@
 package com.gayson.repos;
 
-import com.gayson.models.User;
+import com.gayson.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

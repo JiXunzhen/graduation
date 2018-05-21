@@ -1,29 +1,27 @@
 package com.gayson.controller;
 
-import com.gayson.models.Role;
-import com.gayson.models.User;
-import com.gayson.repos.RoleRepository;
+import com.gayson.exception.ApplicationException;
+import com.gayson.exception.ErrorCode;
+import com.gayson.globals.Result;
+import com.gayson.globals.ResultStatus;
+import com.gayson.model.Role;
+import com.gayson.model.User;
 import com.gayson.repos.UserRepository;
 import com.gayson.security.JwtTokenUtil;
 import com.gayson.security.JwtUser;
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.security.oauth2.resource.ResourceServerProperties;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.*;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -55,7 +53,7 @@ public class AuthController {
     @Transactional
     public Result register(@Validated @RequestBody User user) {
         if (userRepository.findByTelephone(user.getTelephone()) != null) {
-            return Result.createStatus(Result.ResultStatus.DATA_EXIST);
+            return Result.createError(ResultStatus.USER_ERROR, new ApplicationException(ErrorCode.DATA_EXIST));
         }
 
         // authentication
@@ -72,7 +70,7 @@ public class AuthController {
         System.out.println(user);
 
         userRepository.save(user);
-        return Result.createResult(user);
+        return Result.createResult(ResultStatus.OK, user);
     }
 
     @RequestMapping(path = "/login", method = RequestMethod.POST)
@@ -83,10 +81,10 @@ public class AuthController {
         if (user != null) {
             authenticate(telephone, password + user.getSalt());
             final String token = jwtTokenUtil.generateToken(JwtUser.create(user));
-            return Result.createResult(token);
+            return Result.createResult(ResultStatus.OK, token);
         }
 
-        return Result.createStatus(Result.ResultStatus.NOT_FOUND);
+        return Result.createError(ResultStatus.USER_ERROR, new ApplicationException(ErrorCode.NOT_FOUND));
     }
 
     @RequestMapping(path = "/refresh", method = RequestMethod.GET)
@@ -103,15 +101,19 @@ public class AuthController {
         if (resetDate.after(jwtUser.getLastPasswordResetDate()) && jwtTokenUtil.canTokenBeRefreshed(token, jwtUser.getLastPasswordResetDate())) {
             user.setLastPasswordResetDate(resetDate);
             userRepository.save(user);
-            return Result.createResult(jwtTokenUtil.refreshToken(token));
+            return Result.createResult(ResultStatus.OK, jwtTokenUtil.refreshToken(token));
         }
-        return Result.createResult(Result.ResultStatus.EXPIRED_TOKEN, token);
+        return Result.createResult(ResultStatus.EXPIRED_TOKEN, token);
     }
 
     @RequestMapping(path = "/get")
     public Result getUser(HttpServletRequest request) {
         Long id = jwtTokenUtil.getUserId(request);
-        return Result.createResult(userRepository.getOne(id));
+        try {
+            return Result.createResult(ResultStatus.OK, userRepository.getOne(id));
+        } catch (EntityNotFoundException e){
+            return Result.createError(ResultStatus.USER_ERROR, e);
+        }
     }
 
 

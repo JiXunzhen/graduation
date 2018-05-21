@@ -1,6 +1,6 @@
 package com.gayson.security;
 
-import com.gayson.models.User;
+import com.gayson.model.User;
 import com.gayson.repos.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;

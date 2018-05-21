@@ -1,8 +1,8 @@
 package com.gayson.security;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.gayson.models.Role;
-import com.gayson.models.User;
+import com.gayson.model.Role;
+import com.gayson.model.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

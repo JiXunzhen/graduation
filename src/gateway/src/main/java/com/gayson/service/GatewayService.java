@@ -1,6 +1,6 @@
 package com.gayson.service;
 
-import com.gayson.models.order.Order;
+import com.gayson.model.Order;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
